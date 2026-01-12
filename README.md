@@ -56,4 +56,61 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 ## License
 
+
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
+
+# SupermercadosOR
+
+Este proyecto es una aplicación web desarrollada con Laravel para la gestión de usuarios y productos en un supermercado.
+
+## Requisitos
+- PHP >= 8.0
+- Composer
+- MySQL u otro motor de base de datos compatible
+- Node.js y npm (para assets front-end)
+
+## Instalación
+1. Clona el repositorio.
+2. Instala las dependencias con `composer install` y `npm install`.
+3. Copia el archivo `.env.example` a `.env` y configura las variables de entorno.
+4. Genera la clave de la aplicación con `php artisan key:generate`.
+5. Ejecuta las migraciones con `php artisan migrate`.
+6. Compila los assets con `npm run dev`.
+
+## Variables de entorno necesarias
+
+### Base de datos
+Configura las siguientes variables en tu archivo `.env`:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nombre_base_de_datos
+DB_USERNAME=usuario
+DB_PASSWORD=contraseña
+```
+
+### Cloudinary
+Para la integración con Cloudinary, agrega estas variables:
+
+```
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+```
+
+Puedes encontrar estos valores en tu panel de Cloudinary.
+
+## Ejecución
+- Inicia el servidor con `php artisan serve`.
+- Accede a la aplicación en `http://localhost:8000`.
+
+## Tests
+- Ejecuta las pruebas con `php artisan test`.
+
+## Notas
+- Revisa la configuración en los archivos de la carpeta `config/` para personalizaciones adicionales.
+- La documentación técnica adicional se encuentra en la carpeta `docs/`.
