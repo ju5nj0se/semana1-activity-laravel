@@ -10,11 +10,24 @@ use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
+    private function denyIfNotAdmin()
+    {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('users.not-authorized', [], 403);
+        }
+
+        return null;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         $users = User::with('roles')->paginate(10);
         return view('users.index', compact('users'));
     }
@@ -24,6 +37,10 @@ class UserController extends Controller
      */
     public function create()
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         $roles = Role::all();
         return view('users.create', compact('roles'));
     }
@@ -33,6 +50,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -56,6 +77,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
@@ -65,6 +90,10 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -86,6 +115,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if ($response = $this->denyIfNotAdmin()) {
+            return $response;
+        }
+
         // Check if user has active session (last activity < 3 months ago)
         if ($user->last_activity_at && $user->last_activity_at->gt(now()->subMonths(3))) {
             return back()->with('error', 'No se puede eliminar el usuario porque tiene una sesión activa en los últimos 3 meses.');

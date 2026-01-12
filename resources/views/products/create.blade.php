@@ -1,82 +1,80 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Crear Producto') }}
-        </h2>
-    </x-slot>
+@extends('layouts.materialize')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+@section('content')
+    <div class="row">
+        <div class="col s12 m10 offset-m1">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Crear Producto</span>
 
-                    <div class="grid grid-cols-1 gap-6">
-                        <div>
-                            <x-label for="name" value="{{ __('Nombre') }}" />
-                            <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                            <x-input-error for="name" class="mt-2" />
+                    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="input-field">
+                            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+                            <label for="name" class="{{ old('name') ? 'active' : '' }}">Nombre</label>
+                            @error('name')
+                                <span class="helper-text red-text">{{ $message }}</span>
+                            @enderror
                         </div>
 
-                        <div>
-                            <x-label for="description" value="{{ __('Descripción') }}" />
-                            <textarea id="description" name="description" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="3">{{ old('description') }}</textarea>
-                            <x-input-error for="description" class="mt-2" />
+                        <div class="input-field">
+                            <textarea id="description" name="description" class="materialize-textarea">{{ old('description') }}</textarea>
+                            <label for="description" class="{{ old('description') ? 'active' : '' }}">Descripción</label>
+                            @error('description')
+                                <span class="helper-text red-text">{{ $message }}</span>
+                            @enderror
                         </div>
 
-                        <div class="grid grid-cols-1 gap-6">
-                            <div>
-                                <x-label for="price" value="{{ __('Precio') }}" />
-                                <x-input id="price" class="block mt-1 w-full" type="number" step="0.01" name="price" :value="old('price')" required />
-                                <x-input-error for="price" class="mt-2" />
+                        <div class="input-field">
+                            <input id="price" type="number" step="0.01" name="price" value="{{ old('price') }}" required>
+                            <label for="price" class="{{ old('price') ? 'active' : '' }}">Precio</label>
+                            @error('price')
+                                <span class="helper-text red-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="file-field input-field">
+                            <div class="btn indigo">
+                                <span>Imagen</span>
+                                <input id="image" type="file" name="image" accept="image/*">
                             </div>
-                        </div>
-
-                        <div>
-                            <x-label for="image" value="{{ __('Imagen') }}" />
-                            
-                            <div class="mt-2 flex flex-col space-y-4">
-                                <!-- Standard File Input -->
-                                <input id="image" type="file" name="image" accept="image/*" class="block mt-1 w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-blue-50 file:text-blue-700
-                                    hover:file:bg-blue-100" />
-                                
-                                <!-- Camera Preview and Capture -->
-                                <div id="camera-container" class="hidden">
-                                    <video id="video-preview" width="320" height="240" autoplay class="border rounded"></video>
-                                    <button type="button" id="capture-btn" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Capturar Foto</button>
-                                    <canvas id="canvas" width="320" height="240" class="hidden"></canvas>
-                                </div>
-                                
-                                <!-- Button to Activate Camera -->
-                                <button type="button" id="start-camera-btn" class="bg-gray-500 text-white px-4 py-2 rounded w-fit">
-                                    Usar Cámara
-                                </button>
-
-                                <!-- Captured Image Preview (Just to show user) -->
-                                <img id="captured-image-preview" src="#" alt="Captura" class="hidden w-40 h-auto rounded border" />
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Selecciona una imagen">
                             </div>
-
-                            <x-input-error for="image" class="mt-2" />
+                            @error('image')
+                                <span class="helper-text red-text">{{ $message }}</span>
+                            @enderror
                         </div>
-                    </div>
 
-                    <div class="flex items-center justify-end mt-4">
-                        <a href="{{ route('products.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">
-                            {{ __('Cancelar') }}
-                        </a>
-                        <x-button>
-                            {{ __('Guardar') }}
-                        </x-button>
-                    </div>
-                </form>
+                        <div id="camera-container" class="card-panel grey lighten-4" style="display: none;">
+                            <video id="video-preview" width="320" height="240" autoplay class="responsive-video"></video>
+                            <div class="section">
+                                <button type="button" id="capture-btn" class="btn green">Capturar Foto</button>
+                            </div>
+                            <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+                        </div>
+
+                        <div class="section">
+                            <button type="button" id="start-camera-btn" class="btn grey">Usar Cámara</button>
+                        </div>
+
+                        <div class="section">
+                            <img id="captured-image-preview" src="#" alt="Captura" class="responsive-img" style="display: none; max-width: 200px;">
+                        </div>
+
+                        <div class="section right-align">
+                            <a href="{{ route('products.index') }}" class="btn-flat">Cancelar</a>
+                            <button type="submit" class="btn indigo">Guardar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+@endsection
 
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const startCameraBtn = document.getElementById('start-camera-btn');
@@ -92,8 +90,8 @@
                 try {
                     stream = await navigator.mediaDevices.getUserMedia({ video: true });
                     video.srcObject = stream;
-                    cameraContainer.classList.remove('hidden');
-                    startCameraBtn.classList.add('hidden');
+                    cameraContainer.style.display = 'block';
+                    startCameraBtn.style.display = 'none';
                 } catch (err) {
                     alert("Error al acceder a la cámara: " + err);
                 }
@@ -102,29 +100,23 @@
             captureBtn.addEventListener('click', () => {
                 const context = canvas.getContext('2d');
                 context.drawImage(video, 0, 0, 320, 240);
-                
+
                 canvas.toBlob((blob) => {
                     const file = new File([blob], "camera-capture.jpg", { type: "image/jpeg" });
-                    
-                    // Create a container for the file
+
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);
-                    
-                    // Assign to input
                     imageInput.files = dataTransfer.files;
-                    
-                    // Show preview
+
                     capturedPreview.src = URL.createObjectURL(blob);
-                    capturedPreview.classList.remove('hidden');
+                    capturedPreview.style.display = 'block';
 
-                    // Stop stream
                     stream.getTracks().forEach(track => track.stop());
-                    cameraContainer.classList.add('hidden');
-                    startCameraBtn.classList.remove('hidden');
+                    cameraContainer.style.display = 'none';
+                    startCameraBtn.style.display = 'inline-block';
                     startCameraBtn.textContent = "Tomar otra foto";
-
                 }, 'image/jpeg');
             });
         });
     </script>
-</x-app-layout>
+@endpush

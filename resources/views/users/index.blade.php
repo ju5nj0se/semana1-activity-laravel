@@ -1,80 +1,62 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Gestión de Usuarios') }}
-        </h2>
-    </x-slot>
+@extends('layouts.materialize')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+@section('content')
+    <div class="row">
+        <div class="col s12">
+            <h4>Gestión de Usuarios</h4>
 
             @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
+                <div class="card-panel green lighten-4 green-text text-darken-4">
+                    {{ session('success') }}
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
+                <div class="card-panel red lighten-4 red-text text-darken-4">
+                    {{ session('error') }}
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div class="flex justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Listado de Usuarios</h3>
-                    <a href="{{ route('users.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Crear Usuario
-                    </a>
-                </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="row valign-wrapper" style="margin-bottom: 0;">
+                        <div class="col s8">
+                            <span class="card-title">Listado de Usuarios</span>
+                        </div>
+                        <div class="col s4 right-align">
+                            <a href="{{ route('users.create') }}" class="btn indigo">Crear Usuario</a>
+                        </div>
+                    </div>
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="highlight responsive-table">
+                        <thead>
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nombre
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Email
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Rol
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Última Actividad
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Acciones
-                                </th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Última Actividad</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-500">{{ $user->email }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
                                         @foreach ($user->roles as $role)
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                {{ $role->name }}
-                                            </span>
+                                            <span class="new badge green" data-badge-caption="">{{ $role->name }}</span>
                                         @endforeach
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $user->last_activity_at ? $user->last_activity_at->diffForHumans() : 'Nunca' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Editar</a>
-                                        
-                                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="btn btn-warning" onsubmit="return confirm('¿Estás seguro de querer eliminar este usuario?');">
+                                    <td>{{ $user->last_activity_at ? $user->last_activity_at->diffForHumans() : 'Nunca' }}</td>
+                                    <td>
+                                        <a href="{{ route('users.edit', $user) }}" class="btn-small amber darken-2">Editar</a>
+                                        <form action="{{ route('users.destroy', $user) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button type="submit" class="btn-small red" onclick="return confirm('¿Estás seguro de querer eliminar este usuario?');">
+                                                Eliminar
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -82,11 +64,30 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="card-action">
+                    @if ($users->hasPages())
+                        <ul class="pagination center-align">
+                            <li class="{{ $users->onFirstPage() ? 'disabled' : 'waves-effect' }}">
+                                <a href="{{ $users->previousPageUrl() ?? '#' }}">
+                                    <i class="material-icons">chevron_left</i>
+                                </a>
+                            </li>
 
-                <div class="mt-4">
-                    {{ $users->links() }}
+                            @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                                <li class="{{ $users->currentPage() === $page ? 'active indigo' : 'waves-effect' }}">
+                                    <a href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endforeach
+
+                            <li class="{{ $users->hasMorePages() ? 'waves-effect' : 'disabled' }}">
+                                <a href="{{ $users->nextPageUrl() ?? '#' }}">
+                                    <i class="material-icons">chevron_right</i>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
