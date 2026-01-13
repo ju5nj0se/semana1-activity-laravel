@@ -13,20 +13,29 @@
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-            integrity="sha512-GY+0jBbtwVz5c1hX0tWygsJ8PT5JQt7pW1h4U1l5s1rVsL1dKTZ9XfC6oG9I+8gqO2xQnmsV1M6M4u5p2vBR9Q=="
+            integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         />
+        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     </head>
     <body class="grey lighten-4">
         <nav class="indigo">
             <div class="nav-wrapper container">
-                <a href="{{ url('/') }}" class="brand-logo">Semana 1</a>
+                <a href="{{ url('/') }}" class="brand-logo">Supermercados OR</a>
                 <ul class="right hide-on-med-and-down">
                     @auth
-                        <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li><a href="{{ route('products.index') }}">Productos</a></li>
                         <li><a href="{{ route('users.index') }}">Usuarios</a></li>
+                        @role('admin')
+                            <li><a href="{{ route('audits.index') }}">Auditorías</a></li>
+                        @endrole
+                        <li x-data>
+                            <form method="POST" action="{{ route('logout') }}" id="logout-form-layout" style="display: none;">
+                                @csrf
+                            </form>
+                            <a href="{{ route('logout') }}" @click.prevent="$root.submit();" class="waves-effect waves-light btn red accent-2">Cerrar sesión</a>
+                        </li>
                     @endauth
                 </ul>
             </div>
@@ -38,7 +47,7 @@
 
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
-            integrity="sha512-CJ7+4S4Qk6xkU4LD1s7xUvt2A/5e+da+YEX1IhE6F8p7x1z1gFR71FEy0DccEDlDwN3k+Jf4d6v2b9x3D1n5qA=="
+            integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         ></script>

@@ -12,7 +12,7 @@
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-            integrity="sha512-GY+0jBbtwVz5c1hX0tWygsJ8PT5JQt7pW1h4U1l5s1rVsL1dKTZ9XfC6oG9I+8gqO2xQnmsV1M6M4u5p2vBR9Q=="
+            integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         />
@@ -20,11 +20,24 @@
     <body class="grey lighten-4">
         <nav class="indigo">
             <div class="nav-wrapper container">
-                <a href="{{ url('/') }}" class="brand-logo">Semana 1</a>
+                <a href="{{ url('/') }}" class="brand-logo">Supermercados OR</a>
                 <ul class="right hide-on-med-and-down">
                     @if (Route::has('login'))
                         @auth
-                            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li><a href="{{ route('products.index') }}">Productos</a></li>
+
+                            @role('admin')
+                                <li><a href="{{ route('users.index') }}">Usuarios</a></li>
+                            @endrole
+                            @role('admin')
+                                <li><a href="{{ route('audits.index') }}">Auditorías</a></li>
+                            @endrole
+                            <li x-data>
+                                <form method="POST" action="{{ route('logout') }}" id="logout-form-welcome" style="display: none;">
+                                    @csrf
+                                    <button type="submit" @click.prevent="$root.submit();" class="waves-effect waves-light btn red accent-2">Cerrar sesión</button>
+                                </form>
+                            </li>
                         @else
                             <li><a href="{{ route('login') }}">Iniciar sesión</a></li>
                             @if (Route::has('register'))
@@ -40,16 +53,41 @@
             <div class="row">
                 <div class="col s12 m10 offset-m1">
                     <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">Panel principal</span>
-                            <p>
-                                Bienvenido al proyecto de la semana 1. Gestiona usuarios y productos desde un
-                                panel claro, moderno y construido con Materialize CSS.
-                            </p>
-                        </div>
                         <div class="card-action">
                             @auth
-                                <a href="{{ route('dashboard') }}" class="btn indigo">Ir al Dashboard</a>
+                                <div class="row">
+                                    <div class="col s12 m6">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <span class="card-title">Gestión de Productos</span>
+                                                <p>Consulta y administra los productos con un diseño adaptable.</p>
+                                                <a href="{{ route('products.index') }}" class="btn indigo">Productos</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @role('admin')
+                                    <div class="col s12 m6">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <span class="card-title">Gestión de Usuarios</span>
+                                                <p>Organiza roles y usuarios de manera eficiente y segura.</p>
+                                                <a href="{{ route('users.index') }}" class="btn indigo">Usuarios</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endrole
+                                    @role('admin')
+                                    <div class="col s12 m6">
+                                        <div class="card">
+                                            <div class="card-content">
+                                                <span class="card-title">Auditorias</span>
+                                                <p>Estate atento a todo lo que pasa en la aplicación</p>
+                                                    <a href="{{ route('audits.index') }}" class="btn indigo">Auditorías</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endrole
+                                </div>
                             @else
                                 <a href="{{ route('login') }}" class="btn indigo">Ingresar</a>
                                 @if (Route::has('register'))
@@ -61,29 +99,13 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col s12 m6">
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">Gestión de Productos</span>
-                            <p>Consulta y administra el catálogo con un diseño adaptable.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col s12 m6">
-                    <div class="card">
-                        <div class="card-content">
-                            <span class="card-title">Gestión de Usuarios</span>
-                            <p>Organiza roles y usuarios de manera eficiente y segura.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </main>
 
+        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
-            integrity="sha512-CJ7+4S4Qk6xkU4LD1s7xUvt2A/5e+da+YEX1IhE6F8p7x1z1gFR71FEy0DccEDlDwN3k+Jf4d6v2b9x3D1n5qA=="
+            integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         ></script>

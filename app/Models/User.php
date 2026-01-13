@@ -10,10 +10,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens;
+    use HasApiTokens, AuditableTrait;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -21,6 +23,19 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasRoles;
+
+    /**
+     * Attributes to exclude from the Audit.
+     *
+     * @var array
+     */
+    protected $auditExclude = [
+        'last_activity_at',
+        'remember_token',
+        'password',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
 
     /**
      * The attributes that are mass assignable.

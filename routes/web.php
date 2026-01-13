@@ -20,4 +20,7 @@ Route::middleware([
         ->name('products.index');
     Route::middleware(['role:admin'])->resource('products', \App\Http\Controllers\ProductController::class)
         ->except(['index']);
+    
+    Route::middleware(['role:admin'])->get('/audits', [\App\Http\Controllers\AuditController::class, 'index'])
+        ->name('audits.index');
 });
